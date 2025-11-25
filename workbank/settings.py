@@ -21,14 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 import os
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('2RbHpWf13U7Pq5qts-jdUdzmiXwq7M82bYVoWEH_dCWp9QCvvlKWh-bh-ZXSXwBKatc', 'unsafe-default-for-dev')
+import os
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
-
-# Dynamically set allowed hosts
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,[::1]').split(',')
+# ✅ NEW — dynamic, production-safe
+SECRET_KEY = os.environ.get('2RbHpWf13U7Pq5qts-jdUdzmiXwq7M82bYVoWEH_dCWp9QCvvlKWh-bh-ZXSXwBKatc')
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
 
 CRONJOBS = [
     ('0 9 * * *', 'django.core.management.call_command', ['fetch_jobs']),  # Runs every day at 9 AM

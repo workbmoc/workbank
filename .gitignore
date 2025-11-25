@@ -1,0 +1,32 @@
+# Virtual environment
+myenv/
+env/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# SQLite DB (do not upload)
+db.sqlite3
+
+# Static files collected
+staticfiles/
+
+# Zip files
+*.zip
+*.tar
+*.rar
+
+# Local images
+blog_images/
+
+# System files
+*.log
+
+# VSCode / PyCharm
+.vscode/
+.idea/
+
+# OS files
+Thumbs.db

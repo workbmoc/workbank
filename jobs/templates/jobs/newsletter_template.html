@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New Jobs Alert</title>
+</head>
+<body>
+    <h2>🔥 Latest Jobs from WorkBank</h2>
+    <ul>
+        {% for job in jobs %}
+        <li>
+            <strong>{{ job.title }}</strong> at {{ job.company }}<br>
+            Location: {{ job.location }}<br>
+            <a href="{{ job.url }}">View Job</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <p>Visit <a href="http://127.0.0.1:8000/">WorkBank</a> for more jobs!</p>
+</body>
+</html>

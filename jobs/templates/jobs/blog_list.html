@@ -1,0 +1,135 @@
+{% extends "jobs/base.html" %}
+{% load static %}
+
+{% block title %}Blogs | WorkBank{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="text-primary fw-bold">Latest Insights</h1>
+    <div class="text-muted small">
+      {{ blogs.count }} post{{ blogs.count|pluralize }}
+    </div>
+  </div>
+  <p class="text-muted mb-5">Career tips, hiring trends, and job market updates — curated for professionals like you.</p>
+<!-- AD: Top Display -->
+<div class="my-4 text-center">
+  {% include 'jobs/adsense_horizontal.html' %}
+</div>
+
+  {% if blogs %}
+    <div class="row g-4">
+      {% for post in blogs %}
+           {% if forloop.counter == 6 %}
+<div class="col-12 my-4">
+  <!-- AD: Mid-List Display -->
+  {% include 'jobs/adsense_square.html' %}
+</div>
+{% endif %}
+
+        <div class="col-12 col-md-6 col-lg-4">
+          <article class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden transition-all hover:shadow-md">
+            {% if post.image %}
+              <a href="{% url 'blog_detail' post.id %}" class="d-block" tabindex="-1">
+                <div class="ratio ratio-16x9 bg-light-subtle">
+                  <img src="{{ post.image.url }}" 
+                       class="object-fit-cover w-100 h-100" 
+                       alt="{{ post.title|truncatechars:50 }}" 
+                       loading="lazy">
+                </div>
+              </a>
+            {% else %}
+              <div class="ratio ratio-16x9 bg-gradient d-flex align-items-center justify-content-center text-white">
+                <i class="bi bi-file-earmark-text fs-1"></i>
+              </div>
+            {% endif %}
+
+            <div class="card-body d-flex flex-column">
+              <time datetime="{{ post.date_posted|date:'c' }}" class="text-muted small mb-1">
+                {{ post.date_posted|date:"F j, Y" }}
+              </time>
+              <h2 class="h5 card-title fw-bold mb-2">
+                <a href="{% url 'blog_detail' post.id %}" class="text-decoration-none text-dark stretched-link">
+                  {{ post.title }}
+                </a>
+              </h2>
+              <p class="card-text flex-grow-1">
+                {{ post.summary|default:post.content|truncatewords:25|linebreaksbr }}
+              </p>
+              <div class="mt-auto">
+                <a href="{% url 'blog_detail' post.id %}" 
+                   class="btn btn-outline-primary btn-sm px-3 py-1 mt-2">
+                  Read Article <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+      {% endfor %}
+    </div>
+
+<!-- AD: Bottom Display -->
+<div class="my-5 text-center">
+  {% include 'jobs/adsense_horizontal.html' %}
+</div>
+
+    <!-- Optional: Pagination (if you add it later) -->
+    {% if is_paginated %}
+      <nav class="mt-5" aria-label="Blog pagination">
+        <ul class="pagination justify-content-center">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1">&laquo; First</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            </li>
+          {% endif %}
+
+          <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+
+  {% else %}
+    <div class="text-center py-5">
+      <i class="bi bi-journal-text fs-1 text-muted mb-3 d-block"></i>
+      <h3 class="text-muted mb-2">No articles yet</h3>
+      <p class="text-muted mb-4">Check back soon for career insights and job market updates.</p>
+      <a href="{% url 'home' %}" class="btn btn-outline-secondary">Back to Home</a>
+    </div>
+  {% endif %}
+</section>
+
+<script>
+// 🔥 FORCE dark-mode excerpt text visibility — 100% reliable
+(function() {
+    function fixExcerptColor() {
+        if (document.body.classList.contains('dark-mode')) {
+            document.querySelectorAll('.card .card-body > .flex-grow-1')
+                .forEach(el => {
+                    el.style.color = '#cbd5e1';
+                    el.style.setProperty('color', '#cbd5e1', 'important');
+                });
+        }
+    }
+
+    // Run now
+    fixExcerptColor();
+
+    // Also run after theme toggle (in case JS toggle happens later)
+    const observer = new MutationObserver(fixExcerptColor);
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+})();
+</script>
+
+{% endblock %}

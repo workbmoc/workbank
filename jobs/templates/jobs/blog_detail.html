@@ -1,0 +1,88 @@
+{% extends "jobs/base.html" %}
+{% load static %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block seo %}
+<title>{{ post.title }} | WorkBank Blog</title>
+<meta name="description" content="{{ post.summary|truncatechars:150 }}">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+<meta property="og:title" content="{{ post.title }}">
+<meta property="og:description" content="{{ post.summary|truncatechars:150 }}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+{% if post.image %}
+<meta property="og:image" content="{{ post.image.url }}">
+{% endif %}
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ post.title }}">
+<meta name="twitter:description" content="{{ post.summary|truncatechars:150 }}">
+{% if post.image %}
+<meta name="twitter:image" content="{{ post.image.url }}">
+{% endif %}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{ post.title }}",
+  "description": "{{ post.summary|truncatechars:150 }}",
+  "datePublished": "{{ post.date_posted|date:'Y-m-d' }}",
+  "author": { "@type": "Organization", "name": "WorkBank" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "WorkBank",
+    "logo": { "@type": "ImageObject", "url": "{{ request.scheme }}://{{ request.get_host }}/static/img/logo.png" }
+  },
+  "image": {% if post.image %}"{{ post.image.url }}"{% else %}null{% endif %}
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+
+  <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-3">
+    <h1 class="fw-bold">{{ post.title }}</h1>
+
+    <!-- Correct Back Button -->
+    <a href="{% url 'blogs' %}" class="btn btn-sm btn-outline-secondary">
+      &larr; Back to Blogs
+    </a>
+  </div>
+
+  <div class="text-muted mb-4">
+    <i class="bi bi-calendar me-1"></i> {{ post.date_posted|date:"F j, Y" }}
+  </div>
+
+  <!-- AD: Article Top -->
+  <div class="my-4 text-center">
+    {% include 'jobs/adsense_horizontal.html' %}
+  </div>
+
+  {% if post.image %}
+    <div class="ratio ratio-21x9 rounded mb-4 overflow-hidden">
+      <img src="{{ post.image.url }}" class="w-100 h-100 object-fit-cover" alt="{{ post.title }}">
+    </div>
+  {% endif %}
+
+  <!-- AD: After header -->
+  <div class="my-4">
+    {% include 'jobs/ads_block.html' %}
+  </div>
+
+  <!-- Blog Content -->
+  <div class="fs-5">
+    {{ post.content|safe }}
+  </div>
+
+</section>
+
+<!-- AD: Article Bottom -->
+<div class="my-5 text-center">
+  {% include 'jobs/adsense_horizontal.html' %}
+</div>
+
+{% endblock %}

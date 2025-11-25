@@ -1,0 +1,320 @@
+/* ========================================================
+   WORKBANK — FULL LIGHT & DARK MODE (FINAL COMPLETE VERSION)
+   ======================================================== */
+
+/* BASE */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9fafc;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s, border-color 0.2s;
+}
+
+/* DARK MODE ACTIVATED */
+body.dark-mode {
+    background-color: #0f172a !important;
+    color: #e2e8f0 !important;
+}
+
+/* AUTO DARK MODE VIA SYSTEM SETTINGS */
+@media (prefers-color-scheme: dark) {
+    body:not(.dark-mode),
+    body:not(.dark-mode) * {
+        color: #f1f5f9 !important;
+        border-color: #475569 !important;
+    }
+}
+
+/* GLOBAL DEFAULT RESET FIX FOR DARK MODE BLEEDING */
+body.dark-mode div,
+body.dark-mode section,
+body.dark-mode article {
+    background: transparent !important;
+}
+
+/* ================================  
+   CONTAINERS  
+   ================================ */
+.container,
+.content-wrapper,
+.main-content,
+.card,
+.sidebar-card,
+.job-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+body.dark-mode .container,
+body.dark-mode .content-wrapper,
+body.dark-mode .main-content,
+body.dark-mode .card,
+body.dark-mode .sidebar-card,
+body.dark-mode .job-card {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #e2e8f0 !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+/* ================================  
+   NAVBAR  
+   ================================ */
+nav,
+.navbar {
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+nav a,
+.navitem {
+    color: #1f2937;
+    transition: 0.2s ease;
+}
+
+nav a:hover,
+.navitem:hover {
+    color: #1d4ed8;
+}
+
+/* Dark mode navbar */
+body.dark-mode nav,
+body.dark-mode .navbar {
+    background: #1e293b !important;
+    border-bottom: 1px solid #334155 !important;
+}
+
+body.dark-mode nav a,
+body.dark-mode .navitem {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode nav a:hover,
+body.dark-mode .navitem:hover {
+    background: rgba(255,255,255,0.08) !important;
+    color: #93c5fd !important;
+}
+
+/* ================================  
+   HEADINGS  
+   ================================ */
+h1, h2, h3, h4, h5, h6 {
+    color: #1e40af;
+}
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+    color: #cbd5e1 !important;
+}
+
+/* ================================  
+   TEXT & LINKS  
+   ================================ */
+a {
+    color: #1e40af;
+    text-decoration: none;
+}
+a:hover {
+    color: #3b82f6;
+}
+
+body.dark-mode a {
+    color: #60a5fa !important;
+}
+body.dark-mode a:hover {
+    color: #93c5fd !important;
+}
+
+/* ================================  
+   BUTTONS  
+   ================================ */
+.btn-primary {
+    background-color: #1d4ed8;
+    border-color: #1e40af;
+    color: #fff;
+    transition: all 0.2s ease;
+}
+.btn-primary:hover {
+    background-color: #1e40af;
+    transform: translateY(-1px);
+}
+
+body.dark-mode .btn-primary {
+    background-color: #3b82f6 !important;
+    border-color: #2563eb !important;
+    color: #fff !important;
+}
+body.dark-mode .btn-primary:hover {
+    background-color: #2563eb !important;
+}
+
+/* ================================  
+   FORMS / INPUTS  
+   ================================ */
+.form-control,
+input,
+select,
+textarea {
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    color: #111827;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #9ca3af;
+}
+
+body.dark-mode .form-control,
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
+    color: #f1f5f9 !important;
+}
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+    color: #94a3b8 !important;
+}
+
+/* ================================  
+   LIST GROUPS  
+   ================================ */
+.list-group-item {
+    background: #ffffff;
+    border-color: #e5e7eb;
+}
+
+body.dark-mode .list-group-item {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #e2e8f0 !important;
+}
+
+/* ================================  
+   PAGINATION  
+   ================================ */
+.pagination .page-link {
+    background: #fff;
+    border: 1px solid #d1d5db;
+    color: #1f2937;
+}
+
+body.dark-mode .pagination .page-link {
+    background: #334155 !important;
+    border-color: #475569 !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .pagination .page-item.disabled .page-link {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+/* ================================  
+   ALERTS  
+   ================================ */
+.alert {
+    border-radius: 8px;
+}
+
+body.dark-mode .alert {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
+    color: #e2e8f0 !important;
+}
+
+/* ================================  
+   FOOTER  
+   ================================ */
+footer {
+    background: #f8f9fa;
+    padding: 20px;
+    border-top: 1px solid #e5e7eb;
+    color: #4b5563;
+}
+
+body.dark-mode footer {
+    background: #1e293b !important;
+    border-top-color: #334155 !important;
+    color: #94a3b8 !important;
+}
+
+body.dark-mode footer a {
+    color: #93c5fd !important;
+}
+
+/* ================================  
+   GOOGLE ADS PLACEHOLDERS  
+   ================================ */
+.ads-box {
+    background-color: #f8f9fa;
+    border: 1px dashed #007bff;
+    border-radius: 8px;
+    padding: 20px;
+    color: #007bff;
+}
+
+body.dark-mode .ads-box {
+    background-color: #1e293b !important;
+    border-color: #60a5fa !important;
+    color: #60a5fa !important;
+}
+
+/* ================================  
+   🔧 BLOG LISTING SPECIFIC FIXES (CRITICAL FOR DARK MODE)  
+   ================================ */
+/* Target ONLY blog cards using Bootstrap's .card class */
+body.dark-mode .card .text-dark,
+body.dark-mode .card .card-title a,
+body.dark-mode .card .card-text {
+    color: #cbd5e1 !important;
+}
+
+/* Ensure link hover stays visible */
+body.dark-mode .card .card-title a:hover {
+    color: #93c5fd !important;
+}
+
+/* Fix "Read Article" button contrast */
+body.dark-mode .card .btn-outline-primary {
+    color: #93c5fd !important;
+    border-color: #475569 !important;
+}
+body.dark-mode .card .btn-outline-primary:hover {
+    background-color: #334155 !important;
+    color: #e2e8f0 !important;
+    border-color: #334155 !important;
+}
+
+/* Optional: slightly brighter heading */
+body.dark-mode .card .card-title {
+    color: #e2e8f0 !important;
+}
+
+/* Smooth transitions (optional - keep if needed) */
+* {
+    transition: background-color 0.3s, color 0.3s, border-color 0.2s;
+}
+/* 🌓 FIX FOR BLOG EXCERPT TEXT IN DARK MODE */
+body.dark-mode .card .card-text {
+    color: #94a3b8 !important; /* Light gray for readability */
+}
+
+/* Optional: Make it slightly brighter if needed */
+body.dark-mode .card .card-text:hover {
+    color: #cbd5e1 !important;
+}
+body.dark-mode .card .card-text { color: #cbd5e1 !important; }

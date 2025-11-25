@@ -1,0 +1,41 @@
+{% extends "jobs/base.html" %}
+{% block title %}{{ job.title }} at {{ job.company }}{% endblock %}
+{% block content %}
+<section class="container py-5">
+  <div class="d-flex justify-content-between align-items-start mb-4">
+    <div>
+      <h1 class="fw-bold">{{ job.title }}</h1>
+      <h2 class="h4 text-primary">{{ job.company }}</h2>
+    </div>
+    <a href="{% url 'home' %}" class="btn btn-sm btn-outline-secondary">&larr; Back to Jobs</a>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <p><i class="bi bi-geo-alt me-2 text-muted"></i> <strong>Location:</strong> {{ job.location }}</p>
+      <p><i class="bi bi-calendar-event me-2 text-muted"></i> <strong>Posted:</strong> {{ job.date_posted|date:"F j, Y" }}</p>
+    </div>
+    <div class="col-md-6">
+      <p><i class="bi bi-link-45deg me-2 text-muted"></i> <strong>Source:</strong> {{ job.source|default:"WorkBank" }}</p>
+      {% if job.is_paid %}
+        <span class="badge bg-success">Featured</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card p-4 mb-4">
+    <h3 class="h5 mb-3">Job Description</h3>
+    <div class="fs-5">
+      {{ job.description|safe }}
+    </div>
+  </div>
+
+  {% if job.url %}
+    <div class="text-center">
+      <a href="{{ job.url }}" target="_blank" class="btn btn-primary btn-lg px-5">
+        <i class="bi bi-briefcase me-2"></i> Apply Now
+      </a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

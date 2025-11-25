@@ -1,0 +1,498 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkBank | {% block title %}Default Title{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<!-- FAVICON (PNG-only, modern browsers) -->
+ <!-- FAVICON -->
+  <link rel="icon" type="image/x-icon" href="{% static 'jobs/favicon/favicon.ico' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'jobs/favicon/favicon-16x16.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'jobs/favicon/favicon-32x32.png' %}">
+  <link rel="icon" type="image/png" sizes="192x192" href="{% static 'jobs/favicon/favicon-192x192.png' %}">
+  <link rel="shortcut icon" href="{% static 'jobs/favicon/favicon.ico' %}">
+  <link rel="apple-touch-icon" href="{% static 'jobs/img/apple-touch-icon.png' %}">
+  <meta name="theme-color" content="#0d6efd">
+
+    <!-- MASTER THEME (light + dark mode) -->
+   <style>
+
+    /* BODY */
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #fafafa; /* slightly warmer than pure white */
+        color: #212529; /* deep charcoal, crisp & readable */
+        transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark-mode {
+        background: #0f172a !important;
+        color: #e2e8f0 !important;
+    }
+
+    /* CONTAINER */
+    .container {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        margin: 20px auto;
+        max-width: 1200px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* stronger shadow for depth */
+        transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark-mode .container {
+        background: #1e293b !important;
+        color: #e2e8f0 !important;
+    }
+
+    /* FOOTER */
+    footer {
+        text-align: center;
+        padding: 1rem;
+        background: #f8f9fa;
+        margin-top: 2rem;
+        border-top: 1px solid #dee2e6;
+        transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark-mode footer {
+        background: #1e293b !important;
+        color: #94a3b8 !important;
+        border-top-color: #334155 !important;
+    }
+
+    /* NAV ITEMS */
+    .navitem {
+        color: rgba(255,255,255,0.95) !important; /* slightly brighter */
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.3rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.95rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    .navitem:hover {
+        background: rgba(255,255,255,0.2);
+        color: white !important;
+    }
+    .navitem.active {
+        font-weight: 700;
+        color: #ffc107 !important;
+    }
+
+    /* HEADINGS */
+    h1, h2, h3, h4, h5, h6 {
+        color: #1e293b;
+        transition: color 0.3s;
+    }
+    body.dark-mode h1,
+    body.dark-mode h2,
+    body.dark-mode h3,
+    body.dark-mode h4,
+    body.dark-mode h5,
+    body.dark-mode h6 {
+        color: #cbd5e1 !important;
+    }
+
+    /* FORM CONTROLS */
+    .form-control {
+        background-color: #fff;
+        border-color: #ced4da;
+        color: #212529;
+        transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+    }
+    body.dark-mode .form-control {
+        background-color: #334155 !important;
+        border-color: #475569 !important;
+        color: #f1f5f9 !important;
+    }
+
+    /* BUTTONS */
+    .btn {
+        transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+    }
+    body.dark-mode .btn {
+        color: #e2e8f0 !important;
+    }
+    body.dark-mode .btn-outline-primary {
+        border-color: #60a5fa !important;
+        color: #60a5fa !important;
+    }
+    body.dark-mode .btn-outline-primary:hover {
+        background: #60a5fa !important;
+        color: #0f172a !important;
+    }
+
+    /* LINKS */
+    a {
+        color: #0d6efd;
+        text-decoration: underline;
+        transition: color 0.3s;
+    }
+    body.dark-mode a {
+        color: #60a5fa !important;
+    }
+    body.dark-mode a:hover {
+        color: #93c5fd !important;
+    }
+
+    /* CARDS & POSTS */
+    .card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: background 0.3s, border 0.3s, box-shadow 0.3s;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    .card:hover {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+    body.dark-mode .card {
+        background: #1e293b !important;
+        border-color: #334155 !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    .card-title {
+        color: #1e293b;
+        font-weight: 600;
+        transition: color 0.3s;
+    }
+    body.dark-mode .card-title {
+        color: #cbd5e1 !important;
+    }
+    .card-text {
+        color: #495057; /* darker gray for better readability */
+        transition: color 0.3s;
+    }
+    body.dark-mode .card-text {
+        color: #94a3b8 !important;
+    }
+    .card-date {
+        color: #6c757d; /* medium gray for dates */
+        font-size: 0.85rem;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+    body.dark-mode .card-date {
+        color: #94a3b8 !important;
+    }
+
+    /* READ ARTICLE BUTTON */
+    .btn-read {
+        border: 2px solid #0d6efd;
+        color: #0d6efd;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-read:hover {
+        background: #0d6efd;
+        color: white;
+        text-decoration: none;
+    }
+    body.dark-mode .btn-read {
+        border-color: #60a5fa;
+        color: #60a5fa;
+    }
+    body.dark-mode .btn-read:hover {
+        background: #60a5fa;
+        color: #0f172a;
+    }
+    /* === DARK MODE TARGETED STYLES === */
+
+body.dark-mode {
+    /* Ensure body text is crisp */
+    color: #e2e8f0 !important;
+}
+
+/* HEADINGS */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+    color: #cbd5e1 !important;
+}
+
+/* CARD TEXT & DATES */
+body.dark-mode .card-date,
+body.dark-mode .card-text,
+body.dark-mode .text-body,
+body.dark-mode .text-body-secondary,
+body.dark-mode .text-muted {
+    color: #94a3b8 !important;
+}
+
+/* CARD TITLE (blog titles) */
+body.dark-mode .card-title {
+    color: #f1f5f9 !important;
+}
+body.dark-mode .hover-title:hover {
+    color: #93c5fd !important;
+}
+
+/* READ ARTICLE BUTTON */
+body.dark-mode .btn-read {
+    color: #93c5fd !important;
+    border-color: #93c5fd !important;
+}
+body.dark-mode .btn-read:hover {
+    background: #93c5fd !important;
+    color: #0f172a !important;
+}
+
+/* JOB SEEKERS PAGE - CHECKLIST TEXT */
+body.dark-mode .list-group-item {
+    color: #e2e8f0 !important;
+}
+body.dark-mode .list-group-item .text-success {
+    color: #10b981 !important;
+}
+
+/* INPUTS & PLACEHOLDERS */
+body.dark-mode .form-control {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
+    color: #f1f5f9 !important;
+}
+body.dark-mode .form-control::placeholder {
+    color: #94a3b8 !important;
+}
+
+/* NAVBAR TEXT (in case it fades) */
+body.dark-mode #navbar {
+    color: white !important;
+}
+body.dark-mode .navitem {
+    color: rgba(255,255,255,0.95) !important;
+}
+body.dark-mode .navitem:hover {
+    background: rgba(255,255,255,0.15);
+    color: white !important;
+}
+body.dark-mode .navitem.active {
+    color: #fbbf24 !important; /* bright yellow for visibility */
+}
+
+/* FOOTER */
+body.dark-mode footer {
+    background: #1e293b !important;
+    color: #94a3b8 !important;
+    border-top-color: #334155 !important;
+}
+
+/* CONTAINER (if used elsewhere) */
+body.dark-mode .container {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+}
+
+/* BLOGS PAGE - IMAGE PLACEHOLDER ICON */
+body.dark-mode .bg-gradient {
+    background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%) !important;
+}
+body.dark-mode .bi-file-earmark-text {
+    color: #f1f5f9 !important;
+}
+
+/* JOB SEEKERS PAGE - SECTION TITLES */
+body.dark-mode h2,
+body.dark-mode h3 {
+    color: #f1f5f9 !important;
+}
+
+/* JOB SEEKERS - CHECKMARKS & LIST ITEMS */
+body.dark-mode .list-group-item {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+body.dark-mode .list-group-item .text-success {
+    color: #10b981 !important;
+}
+body.dark-mode .list-group-item p {
+    color: #e2e8f0 !important;
+}
+
+/* SUBSCRIBE BUTTON & INPUT */
+body.dark-mode .btn-primary {
+    background: #3b82f6 !important;
+    border-color: #3b82f6 !important;
+    color: white !important;
+}
+body.dark-mode .btn-primary:hover {
+    background: #2563eb !important;
+}
+body.dark-mode .form-control {
+    background: #334155 !important;
+    border: 1px solid #475569 !important;
+    color: #f1f5f9 !important;
+}
+body.dark-mode .form-control::placeholder {
+    color: #94a3b8 !important;
+}
+
+/* HOVER CARD IN DARK MODE */
+body.dark-mode .hover-card {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+body.dark-mode .hover-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
+}
+
+</style>
+
+    {% block seo %}
+<title>WorkBank — Jobs, Career Tips & Opportunities</title>
+<meta name="description" content="Find jobs, career guides, and industry insights. Updated daily with opportunities and career tips.">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+{% endblock %}
+</head>
+
+<body class="light-mode">
+
+    <!-- NAVBAR -->
+    <div id="navbar"
+        style="
+            background: linear-gradient(90deg, #0d6efd, #0b5ed7);
+            color: white;
+            padding: 0.7rem 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        "
+    >
+        <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+
+            <a href="{% url 'home' %}" style="font-weight: bold; font-size: 1.4rem; color: white; text-decoration: none;">
+                WorkBank
+            </a>
+
+            <div style="display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center;">
+
+                <a href="{% url 'home' %}" class="navitem {% if active_page == 'home' %}active{% endif %}">
+                    <i class="bi bi-house"></i> Home
+                </a>
+
+                <a href="{% url 'about' %}" class="navitem {% if active_page == 'about' %}active{% endif %}">
+                    <i class="bi bi-info-circle"></i> About
+                </a>
+
+                <a href="{% url 'categories' %}" class="navitem {% if active_page == 'categories' %}active{% endif %}">
+                    <i class="bi bi-tags"></i> Categories
+                </a>
+
+                <a href="{% url 'locations' %}" class="navitem {% if active_page == 'locations' %}active{% endif %}">
+                    <i class="bi bi-geo-alt"></i> Locations
+                </a>
+
+                <a href="{% url 'blogs' %}" class="navitem {% if active_page == 'blogs' %}active{% endif %}">
+                    <i class="bi bi-newspaper"></i> Blogs
+                </a>
+
+                <a href="{% url 'partners' %}" class="navitem {% if active_page == 'partners' %}active{% endif %}">
+                    <i class="bi bi-handshake"></i> Partners
+                </a>
+
+                <a href="{% url 'jobseekers' %}" class="navitem {% if active_page == 'jobseekers' %}active{% endif %}">
+                    <i class="bi bi-person"></i> Job Seekers
+                </a>
+
+                <a href="{% url 'contact' %}" class="navitem {% if active_page == 'contact' %}active{% endif %}">
+                    <i class="bi bi-envelope"></i> Contact
+                </a>
+                 <a href="{% url 'submit_job' %}" class="navitem {% if active_page == 'submit_job' %}active{% endif %}">
+        <i class="bi bi-plus-circle"></i> Post a Job
+    </a>
+
+                <!-- DARK MODE TOGGLE BUTTON -->
+                <button id="theme-toggle"
+                    style="
+                        width: 34px; height: 34px;
+                        border-radius: 50%;
+                        background: rgba(255,255,255,0.2);
+                        border: none;
+                        color: white;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 1rem;
+                    "
+                >
+                    🌙
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    {% block content %}{% endblock %}
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container" style="background:none; box-shadow:none; padding:0;">
+            <p class="mb-2">
+                <a href="{% url 'terms' %}" class="text-decoration-none">Terms</a> |
+                <a href="{% url 'disclaimer' %}" class="text-decoration-none">Disclaimer</a> |
+                <a href="{% url 'privacy' %}" class="text-decoration-none">Privacy</a>
+            </p>
+
+            <p class="mt-3 mb-0 text-muted">&copy;2025 WorkBank</p>
+        </div>
+    </footer>
+
+
+    <!-- DARK MODE SCRIPT -->
+   <script>
+const themeToggle = document.getElementById("theme-toggle");
+const navbar = document.getElementById("navbar");
+
+function applyTheme() {
+    const dark = localStorage.getItem("dark-mode") === "true";
+
+    // ✅ Remove ALL theme classes first
+    document.body.classList.remove("light-mode", "dark-mode");
+    document.body.classList.add(dark ? "dark-mode" : "light-mode");
+
+    // Update navbar
+    navbar.style.background = dark
+        ? "linear-gradient(90deg, #1e40af, #1d4ed8)"
+        : "linear-gradient(90deg, #0d6efd, #0b5ed7)";
+
+    themeToggle.textContent = dark ? "☀️" : "🌙";
+
+    // ✅ 🔥 FIX BLOG EXCERPTS IMMEDIATELY
+    if (dark) {
+        document.querySelectorAll('.card .card-body > .flex-grow-1')
+            .forEach(el => el.style.color = '#cbd5e1');
+    } else {
+        document.querySelectorAll('.card .card-body > .flex-grow-1')
+            .forEach(el => el.style.color = ''); // reset
+    }
+}
+
+themeToggle.addEventListener("click", () => {
+    const current = localStorage.getItem("dark-mode") === "true";
+    localStorage.setItem("dark-mode", !current);
+    applyTheme();
+});
+
+// Run on load
+applyTheme();
+</script>
+
+</body>
+</html>

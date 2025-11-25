@@ -1,0 +1,145 @@
+<!-- templates/jobs/home.html -->
+{% extends "jobs/base.html" %}
+
+{% block title %}WorkBank | Latest Job Opportunities{% endblock %}
+
+{% block meta_description %}Find verified remote, local, and government jobs in Nigeria and abroad. Updated daily.{% endblock %}
+
+{% block og_title_inner %}WorkBank - Find Jobs That Fit You{% endblock %}
+{% block og_description %}Verified job listings, updated daily. Simple. Fast. Reliable.{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <!-- Jobs Section -->
+        <div class="col-md-8">
+            <h2>Latest Jobs on WorkBank</h2>
+
+            <!-- Search and Filter Form -->
+            <form method="GET" class="mb-4">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" name="keyword" class="form-control" placeholder="Keyword (e.g., Software Engineer)" value="{{ request.GET.keyword }}">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" name="location" class="form-control" placeholder="Location" value="{{ request.GET.location }}">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" name="category" class="form-control" placeholder="Category" value="{{ request.GET.category }}">
+                    </div>
+                    <div class="col-md-2 d-grid">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Job Listings -->
+            <div class="list-group">
+                {% for job in jobs %}
+                    <a href="{{ job.url }}" target="_blank" class="list-group-item list-group-item-action">
+                        <h5>{{ job.title }}</h5>
+                        <p class="mb-1 text-muted">
+                            {{ job.company }} — {{ job.location }} — {{ job.category }}  
+                            <span class="text-secondary">Posted: {{ job.date_posted|date:"F j, Y" }}</span>
+                        </p>
+                        <p>{{ job.description|truncatewords_html:50|safe }}</p>
+                    </a>
+                {% empty %}
+                    <div class="alert alert-warning">No jobs match your filters.</div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Job pagination" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if jobs.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ jobs.previous_page_number }}{% if request.GET.keyword %}&keyword={{ request.GET.keyword|urlencode }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location|urlencode }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category|urlencode }}{% endif %}">
+                                Previous
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li class="page-item disabled">
+                        <span class="page-link">Page {{ jobs.number }} of {{ jobs.paginator.num_pages }}</span>
+                    </li>
+                    {% if jobs.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ jobs.next_page_number }}{% if request.GET.keyword %}&keyword={{ request.GET.keyword|urlencode }}{% endif %}{% if request.GET.location %}&location={{ request.GET.location|urlencode }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category|urlencode }}{% endif %}">
+                                Next
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+
+            <!-- Ad Placeholder -->
+            <div class="mt-4 text-center">
+                <div style="background-color: #f8f9fa; border: 1px dashed #007bff; border-radius: 8px; padding: 20px; color: #007bff; font-weight: 500;">
+                    Google AdSense Bottom Ad Slot (728x90 leaderboard)
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <!-- Sidebar Ad -->
+            <div class="mb-4 text-center">
+                <div style="background-color: #f8f9fa; border: 1px dashed #007bff; border-radius: 8px; padding: 20px; color: #007bff; font-weight: 500;">
+                    Google AdSense Sidebar Ad Slot (300x250)
+                </div>
+            </div>
+
+            <!-- Newsletter -->
+            <div class="card p-3 shadow-sm">
+                <h4 class="text-primary mb-3">Get updates on Jobs</h4>
+                <form id="newsletter-form" method="POST" action="{% url 'subscribe_newsletter' %}">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="email" name="email" class="form-control" placeholder="Your email" required>
+                        <button type="submit" class="btn btn-primary">Update me</button>
+                    </div>
+                </form>
+                <div id="newsletter-message" class="mt-2"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- AJAX newsletter handling -->
+{% block extra_js %}
+<script>
+document.getElementById('newsletter-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const form = e.target;
+    const formData = new FormData(form);
+    
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': '{{ csrf_token }}'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        let alertClass = 'alert-info';
+        if (data.status === 'success') alertClass = 'alert-success';
+        if (data.status === 'error') alertClass = 'alert-danger';
+        
+        document.getElementById('newsletter-message').innerHTML = 
+            `<div class="alert ${alertClass} alert-dismissible fade show">${data.message} <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`;
+        
+        if (data.status === 'success') {
+            form.reset();
+        }
+    })
+    .catch(error => {
+        document.getElementById('newsletter-message').innerHTML = 
+            `<div class="alert alert-danger alert-dismissible fade show">❌ Network error. Please try again. <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`;
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

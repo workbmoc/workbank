@@ -1,0 +1,81 @@
+<!-- templates/jobs/contact.html -->
+{% extends "jobs/base.html" %}
+
+{% block title %}Contact Us | WorkBank{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="fw-bold">Contact Us</h2>
+    <p class="text-body-secondary mb-4">Have questions? Fill out the form below, and we'll get back to you.</p>
+
+    <!-- ✅ MESSAGES AT THE TOP -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- ✅ Dark-mode-ready card -->
+    <div class="card p-4 shadow-sm rounded-3">
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="message" class="form-label">Message</label>
+                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary px-4 py-2">Send Message</button>
+        </form>
+    </div>
+
+    <a href="{% url 'home' %}" class="btn btn-secondary mt-3">Back to Home</a>
+</div>
+
+<style>
+/* Ensure card adapts to dark mode */
+body.dark-mode .card {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+body.dark-mode .form-label {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .form-control {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
+    color: #f1f5f9 !important;
+}
+
+body.dark-mode .form-control::placeholder {
+    color: #94a3b8 !important;
+    opacity: 1;
+}
+
+/* Optional: improve message alerts in dark mode */
+body.dark-mode .alert-success {
+    background-color: #065f46 !important;
+    color: #f0fdf4 !important;
+    border-color: #0e7490 !important;
+}
+body.dark-mode .alert-danger {
+    background-color: #7f1d1d !important;
+    color: #fee2e2 !important;
+    border-color: #b91c1c !important;
+}
+body.dark-mode .btn-close {
+    filter: invert(1) grayscale(1) brightness(2);
+}
+</style>
+{% endblock %}

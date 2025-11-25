@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New Jobs on WorkBank</title>
+</head>
+<body>
+    <h2>New Jobs Just Added!</h2>
+    <ul>
+        {% for job in jobs %}
+            <li>
+                <strong>{{ job.title }}</strong> at {{ job.company }}<br>
+                Location: {{ job.location }}<br>
+                <a href="{{ job.url }}">View Job</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <p>Visit <a href="https://yourdomain.com">WorkBank</a> for more job listings.</p>
+<!-- footer.html or inside your base.html footer section -->
+<footer class="bg-light p-4 text-center">
+    <p>Get updated for new job alerts:</p>
+    <form method="post" action="{% url 'subscribe_newsletter' %}">
+        {% csrf_token %}
+        <input type="email" name="email" class="form-control d-inline-block w-auto" placeholder="Enter your email" required>
+        <button type="submit" class="btn btn-primary">Update Me</button>
+    </form>
+
+    {% if messages %}
+      <div class="mt-2">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+</footer>
+</body>
+</html>

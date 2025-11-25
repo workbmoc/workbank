@@ -19,13 +19,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
+import os
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '2RbHpWf13U7Pq5qts-jdUdzmiXwq7M82bYVoWEH_dCWp9QCvvlKWh-bh-ZXSXwBKatc'
+SECRET_KEY = os.environ.get('2RbHpWf13U7Pq5qts-jdUdzmiXwq7M82bYVoWEH_dCWp9QCvvlKWh-bh-ZXSXwBKatc', 'unsafe-default-for-dev')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+# Dynamically set allowed hosts
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,[::1]').split(',')
 
 CRONJOBS = [
     ('0 9 * * *', 'django.core.management.call_command', ['fetch_jobs']),  # Runs every day at 9 AM
@@ -165,4 +168,8 @@ EMAIL_HOST_USER = 'workbankmoc@gmail.com'  # Your email
 EMAIL_HOST_PASSWORD = 'efod srbt egrr vabw'  # Generate app password in Google account settings (not regular password)
 DEFAULT_FROM_EMAIL = 'workbankmoc@gmail.com'
 
-NEWS_API_KEY = '4a5462d784544ca8bad5f21d391d56c3'  # Replace with the key from NewsAPI
+NEWS_API_KEY = '4a5462d784544ca8bad5f21d391d56c3'  # Replace with the key from NewsAPI# Trust Render's proxy headers
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+

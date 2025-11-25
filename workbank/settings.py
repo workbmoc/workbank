@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '2RbHpWf13U7Pq5qts-jdUdzmiXwq7M82bYVoWEH_dCWp9QCvvlKWh-bh-ZXSXwBKatc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ["workbank.onrender.com"]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
 
 CRONJOBS = [
     ('0 9 * * *', 'django.core.management.call_command', ['fetch_jobs']),  # Runs every day at 9 AM

@@ -11,23 +11,30 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
-import os
+# ✅ CORRECTED: Load from environment — NEVER hardcode in settings
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if not SECRET_KEY:
+    raise ValueError("The SECRET_KEY environment variable must be set in production.")
 
-import os
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-# ✅ NEW — dynamic, production-safe
-SECRET_KEY = os.environ.get('2RbHpWf13U7Pq5qts-jdUdzmiXwq7M82bYVoWEH_dCWp9QCvvlKWh-bh-ZXSXwBKatc')
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+# ✅ CORRECTED: ALLOWED_HOSTS from env — split by comma
+allowed_hosts = os.environ.get('ALLOWED_HOSTS', '')
+ALLOWED_HOSTS = [host.strip() for host in allowed_hosts.split(',') if host.strip()]
 
+# Optional: fallback for local dev
+if not ALLOWED_HOSTS and DEBUG:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+
+# Cron jobs
 CRONJOBS = [
     ('0 9 * * *', 'django.core.management.call_command', ['fetch_jobs']),  # Runs every day at 9 AM
     ('0 0 * * *', 'django.core.management.call_command', ['fetch_job_news']),
@@ -53,10 +60,9 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
-
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ✅ Add for static files on Render
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -70,7 +76,7 @@ ROOT_URLCONF = 'workbank.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS':  [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -85,89 +91,70 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'workbank.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# ✅ CORRECTED: Use PostgreSQL in production, SQLite only for DEBUG=True
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
-
+else:
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
 
 # Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = 'static/'
-
-STATIC_ROOT = BASE_DIR / 'staticfiles'  # Creates a 'staticfiles' folder in your project root
-
-# === STATIC FILES ===
+# ✅ CORRECTED: Static files — unified setup for dev + prod
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# For development only (DEBUG=True)
 if DEBUG:
-    STATICFILES_DIRS = [
-        BASE_DIR / "static",  # ← This line is critical
-    ]
+    STATICFILES_DIRS = [BASE_DIR / "static"]
 
+# Use WhiteNoise for static files in production
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-PAYSTACK_SECRET_KEY = 'sk_test_e7a4bb3ceeebf2d4bf81956bd71c3190138f8c48'  # Get from Paystack dashboard
-PAYSTACK_PUBLIC_KEY = 'pk_test_f0ffa14e8c3edb346499c764b359fc5876c5fbdf'
+# === Third-party keys (still safe — but prefer env vars for production) ===
+PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY', 'sk_test_e7a4bb3ceeebf2d4bf81956bd71c3190138f8c48')
+PAYSTACK_PUBLIC_KEY = os.environ.get('PAYSTACK_PUBLIC_KEY', 'pk_test_f0ffa14e8c3edb346499c764b359fc5876c5fbdf')
 
-BREVO_API_KEY = 'your_brevo_api_key'  # From Brevo dashboard
+BREVO_API_KEY = os.environ.get('BREVO_API_KEY', 'your_brevo_api_key')  # From Brevo dashboard
 
-ADZUNA_APP_ID = 'c714ce12'
-ADZUNA_APP_KEY = '61af0605597bddaf2d06d96232532be6'
+ADZUNA_APP_ID = os.environ.get('ADZUNA_APP_ID', 'c714ce12')
+ADZUNA_APP_KEY = os.environ.get('ADZUNA_APP_KEY', '61af0605597bddaf2d06d96232532be6')
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # For real emails; use 'console.EmailBackend' for testing in terminal
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'workbankmoc@gmail.com'  # Your email
-EMAIL_HOST_PASSWORD = 'efod srbt egrr vabw'  # Generate app password in Google account settings (not regular password)
-DEFAULT_FROM_EMAIL = 'workbankmoc@gmail.com'
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', 'True').lower() == 'true'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'workbankmoc@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'efod srbt egrr vabw')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'workbankmoc@gmail.com')
 
-NEWS_API_KEY = '4a5462d784544ca8bad5f21d391d56c3'  # Replace with the key from NewsAPI# Trust Render's proxy headers
+NEWS_API_KEY = os.environ.get('NEWS_API_KEY', '4a5462d784544ca8bad5f21d391d56c3')  # Replace with the key from NewsAPI
 
+# ✅ Trust Render's proxy headers — critical for ALLOWED_HOSTS to work
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-

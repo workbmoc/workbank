@@ -26,7 +26,7 @@ import os
 # ✅ NEW — dynamic, production-safe
 SECRET_KEY = os.environ.get('2RbHpWf13U7Pq5qts-jdUdzmiXwq7M82bYVoWEH_dCWp9QCvvlKWh-bh-ZXSXwBKatc')
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = ["workbank-1.onrender.com"]
 
 CRONJOBS = [
     ('0 9 * * *', 'django.core.management.call_command', ['fetch_jobs']),  # Runs every day at 9 AM
